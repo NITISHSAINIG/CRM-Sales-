@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System user with role-based access.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "salesperson"] },
+        "photoURL": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "Potential customer information.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "source": { "type": "string" },
+        "assignedTo": { "type": "string", "description": "UID of the salesperson" },
+        "status": { "type": "string", "enum": ["active", "converted", "inactive"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "assignedTo"]
+    },
+    "Deal": {
+      "title": "Deal",
+      "description": "Sales opportunity linked to a lead.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "leadId": { "type": "string" },
+        "leadName": { "type": "string" },
+        "value": { "type": "number" },
+        "stage": { "type": "string", "enum": ["Lead", "Qualified", "Proposal", "Negotiation", "Won", "Lost"] },
+        "expectedCloseDate": { "type": "string", "format": "date" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["leadId", "value", "stage"]
+    },
+    "Activity": {
+      "title": "Activity",
+      "description": "Interaction history with a lead.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "leadId": { "type": "string" },
+        "type": { "type": "string", "enum": ["call", "meeting", "email", "note"] },
+        "description": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["leadId", "type", "description", "timestamp", "createdBy"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "User profiles and roles."
+    },
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Leads database."
+    },
+    "/deals/{dealId}": {
+      "schema": "Deal",
+      "description": "Sales deals/opportunities."
+    },
+    "/activities/{activityId}": {
+      "schema": "Activity",
+      "description": "Activity logs for leads."
+    }
+  }
+}
